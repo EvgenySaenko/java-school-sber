@@ -1,4 +1,4 @@
-package ru.sber.javaschool.homeworks.tasks.task2002;
+package ru.sber.javaschool.homeworks.homework1.tasks.task2002;
 
 import java.util.Scanner;
 
