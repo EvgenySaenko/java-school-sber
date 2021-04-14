@@ -1,4 +1,4 @@
-package ru.sber.javaschool.homeworks.tasks.task2023.solution1;
+package ru.sber.javaschool.homeworks.homework1.tasks.task2023.solution1;
 
 import java.util.*;
 
