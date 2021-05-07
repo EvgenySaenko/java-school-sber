@@ -41,9 +41,6 @@ public class FileSystemClassloader extends ClassLoader {
         }
     }
 
-    /*
-     * Передайте cn.hanquan.myloader.Hello и верните байтовый массив c: /picture/cn/hanquan/myloader/Hello.class
-     */
     private byte[] getClassData(String className) {
         String path = rootDir + "/" + className.replace('.', '/') + ".class";
         InputStream is = null;
