@@ -8,8 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
-import ru.sber.javaschool.homeworks.homework4.TerminalImpl;
-import ru.sber.javaschool.homeworks.homework4.util.Callback;
+import ru.sber.javaschool.homework4.TerminalImpl;
+import ru.sber.javaschool.homework4.util.Callback;
 
 import java.net.URL;
 import java.util.ResourceBundle;

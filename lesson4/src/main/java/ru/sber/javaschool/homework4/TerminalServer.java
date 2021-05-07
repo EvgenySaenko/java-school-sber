@@ -1,7 +1,7 @@
 package ru.sber.javaschool.homework4;
 
-import ru.sber.javaschool.homeworks.homework4.db.DataBase;
-import ru.sber.javaschool.homeworks.homework4.util.Callback;
+import ru.sber.javaschool.homework4.db.DataBase;
+import ru.sber.javaschool.homework4.util.Callback;
 
 public class TerminalServer implements Terminal {
     private DataBase dataBase;

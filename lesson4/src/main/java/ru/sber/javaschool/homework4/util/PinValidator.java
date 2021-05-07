@@ -1,6 +1,6 @@
 package ru.sber.javaschool.homework4.util;
 
-import ru.sber.javaschool.homeworks.homework4.db.DataBase;
+import ru.sber.javaschool.homework4.db.DataBase;
 
 import javax.xml.bind.ValidationException;
 

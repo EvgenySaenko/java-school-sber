@@ -1,7 +1,7 @@
 package ru.sber.javaschool.homework4;
 
-import ru.sber.javaschool.homeworks.homework4.GUI.TerminalController;
-import ru.sber.javaschool.homeworks.homework4.util.PinValidator;
+import ru.sber.javaschool.homework4.GUI.TerminalController;
+import ru.sber.javaschool.homework4.util.PinValidator;
 
 public class TerminalImpl implements Terminal{
 

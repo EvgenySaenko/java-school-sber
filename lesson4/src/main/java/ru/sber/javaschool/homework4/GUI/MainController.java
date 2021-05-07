@@ -9,7 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import ru.sber.javaschool.homeworks.homework4.TerminalImpl;
+import ru.sber.javaschool.homework4.TerminalImpl;
 
 import javax.security.auth.login.AccountLockedException;
 import java.io.IOException;
