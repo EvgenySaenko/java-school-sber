@@ -17,6 +17,7 @@
         <module>lesson6</module>
         <module>lesson7</module>
         <module>plugin-test2</module>
+        <module>lesson8</module>
     </modules>
 
     <properties>

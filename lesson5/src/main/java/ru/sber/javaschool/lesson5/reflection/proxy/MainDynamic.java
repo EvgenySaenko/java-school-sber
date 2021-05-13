@@ -5,7 +5,7 @@ import java.lang.reflect.Proxy;
 public class MainDynamic {
 
     public static void main(String[] args) {
-        Calculator delegate=new CalculatorImpl();
+        Calculator delegate = new CalculatorImpl();
         Calculator calculator= (Calculator) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(),
                 delegate.getClass().getInterfaces(),
                 new CachedInvocationHandler(delegate));
