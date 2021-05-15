@@ -1,8 +1,6 @@
 package ru.sber.javaschool;
 
 
-import sun.misc.LRUCache;
-
 import java.io.*;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -11,20 +9,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public class CacheProxyHandler implements InvocationHandler {
 
     private Map<Object, Object> lruCache;
-
     private final Object original;
-
     private final Path cacheDirectory;
-
-    private int maxCapacity;
-
+    private final int maxCapacity;
 
     public CacheProxyHandler(Object proxyCandidate, int maxCapacity, Path cacheDirectory) {
         this.maxCapacity = maxCapacity;
@@ -33,10 +26,11 @@ public class CacheProxyHandler implements InvocationHandler {
         initLruCache();
     }
 
-    public void initLruCache() {
+    public void initLruCache() {//самый первый который попал в кэш считаем самым старым => будет вылетать при переполненнии кеша
         this.lruCache = new LinkedHashMap<Object, Object>(maxCapacity, 0.75f, true) {
             @Override
             protected boolean removeEldestEntry(Map.Entry<Object, Object> eldest) {
+                System.out.println("size = " + size() + "maxCapacity = " + maxCapacity);
                 return size() > maxCapacity;
             }
         };
@@ -50,22 +44,27 @@ public class CacheProxyHandler implements InvocationHandler {
                 Object resultValue = invokeOriginal(method, args);//получили результат
                 lruCache.put(key(method, args), resultValue);//закинули в мапу
             }
-            //lruCache.forEach((k,v) -> System.out.println("key - " + k + " " + "value -" + v));
+            lruCache.forEach((k,v) -> System.out.println("key - " + k + " " + "value -" + v));
             return lruCache.get(key(method, args));
-        } else {
-            if (method.getAnnotation(Cache.class).zip()) {
-
-            }
+        } else {//если FILE
             //сформируем имя файла [public abstract double ru.sber.javaschool.HardService.doHardWork(java.lang.String,double), work1, 3.5]
+            //[public abstract java.lang.String ru.sber.javaschool.HardService.doHardWorkForFile(java.lang.String,java.lang.String), copyPast8, HappyNewYear]
             String fileName = key(method, args).toString() + ".txt";
-            if (Files.exists(Paths.get(cacheDirectory + "\\" + fileName))) {
+            String fileNameZipFile = key(method, args).toString() + ".zip";
+            if (Files.exists(Paths.get(cacheDirectory + "\\" + fileName))) {//ищет не сжатые файлы
                 //если такой файл есть => достали результат и вернули
-                double result = (double) deserializeDataFromFile(fileName);
-                return result;
+                return deserializeDataFromFileNoZip(fileName);
+            }
+            if (Files.exists(Paths.get(cacheDirectory + "\\" + fileNameZipFile))) {//ищет сжатые файлы
+                //если такой файл есть => достали результат и вернули
+                return deserializeDataFromFileZip(fileNameZipFile);
+            }
+            if (method.getAnnotation(Cache.class).zip()) {//если указали => сжать файл
+                Object resultValue = invokeOriginal(method, args);
+                serializeDataToFileZip(fileName, resultValue);
             }
             Object resultValue = invokeOriginal(method, args);//получим результат
-            boolean zip = method.getAnnotation(Cache.class).zip();//узнаем надо ли сжимать файл
-            serializeDataToFile(fileName, resultValue,zip);//кладем имя файла и результат
+            serializeDataToFileNoZip(fileName, resultValue);//кладем имя файла и результат
             return resultValue;
         }
     }
@@ -89,21 +88,9 @@ public class CacheProxyHandler implements InvocationHandler {
         return key;//[public abstract double ru.sber.javaschool.HardService.doHardWork(java.lang.String,double), work1, 3.5]
     }
 
-    private void serializeDataToFile(String fileName, Object resultValue, boolean zip) {
+    private void serializeDataToFileNoZip(String fileName, Object resultValue) {
         //формируем полный путь с именем файла
         Path fullFileNamePath = Paths.get(cacheDirectory + "\\" + fileName);
-        if (zip){
-            try (FileOutputStream fos = new FileOutputStream(fullFileNamePath.toString());
-                 GZIPOutputStream gzos =  new GZIPOutputStream(fos);
-                 ObjectOutputStream oos = new ObjectOutputStream(gzos)) {
-                oos.writeObject(resultValue);//пишем в файл результат
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         try (FileOutputStream fos = new FileOutputStream(fullFileNamePath.toString());
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(resultValue);//пишем в файл результат
@@ -114,13 +101,41 @@ public class CacheProxyHandler implements InvocationHandler {
         }
     }
 
-    private Object deserializeDataFromFile(String fileName) {
+    private Object deserializeDataFromFileNoZip(String fileName) {
         //формируем полный путь с именем файла
         Path fullFileNamePath = Paths.get(cacheDirectory + "\\" + fileName);
 
         Object result = null;
         try (FileInputStream fis = new FileInputStream(fullFileNamePath.toString());
              ObjectInputStream ois = new ObjectInputStream(fis)) {
+            result = ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private void serializeDataToFileZip(String fileName, Object resultValue){
+        Path fullFileNamePath = Paths.get(cacheDirectory + "\\" + fileName);
+        try (FileOutputStream fos = new FileOutputStream(fullFileNamePath.toString() + ".zip");
+             GZIPOutputStream gzos =  new GZIPOutputStream(fos);
+             ObjectOutputStream oos = new ObjectOutputStream(gzos)) {
+            oos.writeObject(resultValue);//пишем в файл результат
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private Object deserializeDataFromFileZip(String fileName) {
+        //формируем полный путь с именем файла
+        Path fullFileNamePath = Paths.get(cacheDirectory + "\\" + fileName);
+
+        Object result = null;
+        try (FileInputStream fis = new FileInputStream(fullFileNamePath.toString());
+             GZIPInputStream gzis =  new GZIPInputStream(fis);
+             ObjectInputStream ois = new ObjectInputStream(gzis)) {
             result = ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();

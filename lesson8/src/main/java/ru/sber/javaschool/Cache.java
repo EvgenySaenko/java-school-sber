@@ -19,7 +19,7 @@ public @interface Cache {
 
     boolean zip() default false;
 
-    Class<?> [] identityBy() default {String.class,Double.class};
+    Class<?> [] identityBy() default {Object.class,Object.class};
 
     int size();
 
