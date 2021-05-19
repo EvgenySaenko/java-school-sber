@@ -16,16 +16,28 @@
         <module>lesson5</module>
         <module>lesson6</module>
         <module>lesson7</module>
-        <module>plugin-test2</module>
         <module>lesson8</module>
+        <module>lesson9</module>
+        <module>lesson10</module>
     </modules>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
     <dependencies>
+<!--    секция логирования-->
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.20</version>
+            <scope>provided</scope>
+        </dependency>
+
+<!--    секция тестирования-->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
