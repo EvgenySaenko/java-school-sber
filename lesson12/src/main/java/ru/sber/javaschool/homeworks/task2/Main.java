@@ -1,8 +1,8 @@
 package ru.sber.javaschool.homeworks.task2;
 
 
-public class Main {//todo не решено!
-    public static void main(String[] args) {
+public class Main {//TODO не доделал
+    public static void main(String[] args) throws InterruptedException {
         Callback callback =  new Callback();
 
         Task task1 = new Task(1);
@@ -13,6 +13,7 @@ public class Main {//todo не решено!
 
         ExecutionManager manager =  new Executor(4);
         Context context = manager.execute(callback,task1,task2,task3,task4,task5);
-        context.getCompletedTaskCount();
+        Thread.sleep(4000);
+        System.out.println("completed: " + context.getCompletedTaskCount());
     }
 }

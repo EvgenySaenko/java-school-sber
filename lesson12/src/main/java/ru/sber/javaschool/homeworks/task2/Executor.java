@@ -8,13 +8,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 public class Executor implements ExecutionManager{
-    private final ExecutorService service;
-    private final List<Future<Integer>> listFuture;
+    private ExecutorService service;
+    private final List<Future<?>> listFuture;
     private List<Integer> result;
-    private Context context;
+    private ContextImpl context;
 
     public Executor(int countThread) {
-        this.service = Executors.newFixedThreadPool(countThread);
+
         this.listFuture = new ArrayList<>();
         this.result =  new ArrayList<>();
         this.context =  new ContextImpl();
@@ -22,20 +22,30 @@ public class Executor implements ExecutionManager{
 
     @Override
     public Context execute(Runnable callback, Runnable...tasks) {
+        this.service = Executors.newFixedThreadPool(tasks.length);
         for (Runnable task : tasks) {
-            listFuture.add((Future<Integer>) service.submit(task));
+            Future<?> future = service.submit(task);
+            listFuture.add(future);//добавили в лист
+
+        }
+
+        for (Future<?> future : listFuture) {//перебираем лист фьюч
+            service.execute(()->{
+                if(future.isDone()){//если выполнена
+                    context.incrementCompletedTaskCount();
+                }
+                if (future.isCancelled()){
+                    context.incrementFailedTaskCount();
+                }
+                //cancel()- отмена выполнения задачи; если задача уже стартована и параметр mayInterrupt равен true,
+                // то она прерывается, в противном случае, если вычисления еще не начаты, то они и не начнутся.
+                // При успешной отмене выполнения задачи метод возвращает значение true
+                if (future.cancel(false)){//false - чтобы прервать неначатые задачи
+                    context.incrementInterruptedTaskCount();
+                }
+            });
         }
         service.shutdown();
-
-        for (Future<Integer> integerFuture : listFuture) {
-            try {
-                result.add(integerFuture.get());
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+        return context;
     }
 }
