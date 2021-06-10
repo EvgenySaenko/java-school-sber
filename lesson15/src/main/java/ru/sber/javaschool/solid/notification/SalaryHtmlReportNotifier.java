@@ -7,7 +7,6 @@ import ru.sber.javaschool.solid.generator.GeneratorForm;
 import ru.sber.javaschool.solid.generator.HtmlGeneratorForm;
 
 import javax.mail.MessagingException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
@@ -19,7 +18,7 @@ public class SalaryHtmlReportNotifier {
     private MailService mailService;
 
 
-    public SalaryHtmlReportNotifier(DatabaseConnection connection) {
+    public SalaryHtmlReportNotifier() {
         connection = DatabaseConnection.getInstance();
         generatorForm = new HtmlGeneratorForm();
     }

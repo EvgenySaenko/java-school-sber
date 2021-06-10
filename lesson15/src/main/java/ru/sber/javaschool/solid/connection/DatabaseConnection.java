@@ -11,7 +11,7 @@ public class DatabaseConnection {
     private static final DatabaseConnection dbConnection = null;
     private static Connection connection;
     private static Statement stmt;
-    private static PreparedStatement ps;
+    private PreparedStatement ps;
     private static final String USER_NAME = "root";
     private static final String PASSWORD = "root";
 
@@ -24,10 +24,6 @@ public class DatabaseConnection {
         Class.forName("com.mysql.cj.jdbc.Driver");
         connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/employees",USER_NAME,PASSWORD);
         stmt = connection.createStatement();
-    }
-
-    public void preparedStatements(String query) throws SQLException {
-        ps = connection.prepareStatement(query);
     }
 
     public void disconnect(ResultSet resultSet){
@@ -61,21 +57,27 @@ public class DatabaseConnection {
         }
     }
 
-    public List<Employee> getListEmployees(int fromId, int toId) throws SQLException {
+    public List<Employee> getListEmployees(int fromId, int toId){
         String query = "select e.emp_no,e.first_name,e.last_name from employees e where (e.emp_no>=?) and (e.emp_no <=?)";
-        ps = connection.prepareStatement(query);
-        ps.setInt(1,fromId);
-        ps.setInt(2,toId);
         List<Employee> employeeList =  new ArrayList<>();
-        try(ResultSet rs = ps.executeQuery()){
-            while (rs.next()){
-                int id = Integer.parseInt(rs.getString("emp_no"));
-                String firstName = rs.getString("first_name");
-                String lastName = rs.getString("last_name");
-                Employee e = new Employee(id,firstName,lastName);
-                employeeList.add(e);
-                //System.out.println(rs.getString("emp_no") + " " + rs.getString("first_name") + " " + rs.getString("last_name"));
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            preparedStatement.setInt(1,fromId);
+            preparedStatement.setInt(2,toId);
+
+            try(ResultSet rs = preparedStatement.executeQuery()){
+                while (rs.next()){
+                    int id = Integer.parseInt(rs.getString("emp_no"));
+                    String firstName = rs.getString("first_name");
+                    String lastName = rs.getString("last_name");
+                    Employee e = new Employee(id,firstName,lastName);
+                    employeeList.add(e);
+                    //System.out.println(rs.getString("emp_no") + " " + rs.getString("first_name") + " " + rs.getString("last_name"));
+                }
+            } catch (SQLException throwables) {
+                throw new RuntimeException("error getting data from the database");
             }
+        } catch (SQLException throwables) {
+            throw new RuntimeException("error creating prepared Statement");
         }
         return employeeList;
     }
