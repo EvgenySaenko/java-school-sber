@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.w3.org/1999/xhtml" lang="EN">
+<head>
+    <meta charset="utf-8"/>
+    <title>OnlineShop</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Вы не выбрали ни одного рингтона!</h4>
+            <p>Если вы все же хотите скачать какой-нибудь из ранее предложенных рингтонов, то перейдите по ссылке ниже.
+                Спасибо за внимание!</p>
+            <hr>
+            <p class="mb-0">Будьте внимательны, хорошего вам дня.</p>
+        </div>
+        <div class="col-sm my-2">
+            <a class="nav-link btn btn-dark" th:href="@{/ringtones/all}">К списку рингтонов</a>
+        </div>
+    </div>
+
+</body>
+</html>
+
