@@ -1,0 +1,54 @@
+<div class="container">
+    <h2><small><em>Добавить новый рецепт рецепт:</em></small></h2>
+    <form novalidate ng-submit="addNewRecipe()">
+        <div class="form-group col-md-6">
+            <label for="newRecipeTitle">Название</label>
+            <input class="form-control" type="text" placeholder="Введите название" ng-model="newRecipe.title" id="newRecipeTitle">
+        </div>
+        <div class="form-group col-md-12">
+            <label for="newRecipeDescription">Описание рецепта</label>
+            <textarea class="form-control" rows="4" type="text" placeholder="Введите описание" ng-model="newRecipe.description" id="newRecipeDescription"></textarea>
+        </div>
+
+        <h4><small><em>Добавьте ингридиенты:</em></small></h4>
+        <table class="table table-hover" cellpadding="0" cellspacing="0">
+            <tr>
+                <th>Название</th>
+                <th>Количество(гр)</th>
+                <th>Действие</th>
+            </tr>
+            <tbody ng-repeat="i in Ingredients">
+            <tr>
+                <td><input class="form-control"  type="text" value="{{i.title}}" /></td>
+                <td><input class="form-control"  type="number" value="{{i.quantity}}" /></td>
+                <td>
+                    <input class="btn" style="background-color: #fd7e14;"  type="button" ng-click="Remove($index)" value="Удалить ингридиент" />
+                </td>
+            </tr>
+            </tbody>
+            <tfoot>
+            <tr>
+                <td class="form-row">
+                    <div class="form-group col-md-8">
+                        <input class="form-control" placeholder="Название" type="text" ng-model="title" />
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group col-md-8">
+                        <input class="form-control" placeholder="Количество" type="number" ng-model="quantity" />
+                    </div>
+                </td>
+                <td>
+                    <div class="form-group col-md-8">
+                        <input class="btn" style="background-color: #fd7e14;" type="button" ng-click="Add()" value="Добавить ингридиент" />
+                    </div>
+                </td>
+            </tr>
+            </tfoot>
+        </table>
+        <div>
+            <button class="btn" style="background-color: #fd7e14;" type="submit">Добавить рецепт</button>
+        </div>
+    </form>
+</div>
+

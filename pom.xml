@@ -33,6 +33,7 @@
         <module>lesson15</module>
         <module>lesson16</module>
         <module>lesson17</module>
+        <module>lesson18</module>
     </modules>
 
     <properties>
@@ -45,10 +46,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
         </dependency>
 <!--    секция логирования-->
 
@@ -93,7 +90,24 @@
             <scope>test</scope>
         </dependency>
 
+
+        <!--    JavaFX   -->
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>17-ea+13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>17-ea+13</version>
+        </dependency>
+
+
     </dependencies>
+
+
+
 
     <build>
         <plugins>

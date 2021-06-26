@@ -1,0 +1,23 @@
+<div class="container">
+    <h1><small><em>{{Recipe.title}}</em></small></h1>
+    <p>{{Recipe.description}}</p>
+    <h2><small><em>Ингридиенты:</em></small></h2>
+
+    <table class="table table-hover" cellpadding="0" cellspacing="0">
+        <thead>
+        <tr>
+            <td style="display:none;">ID</td>
+            <td>Название</td>
+            <td>Количество</td>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="ing in Recipe.ingredients">
+            <td style="display:none;">{{ing.id}}</td>
+            <td>{{ing.title}}</td>
+            <td>{{ing.quantity}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+

@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Греция",
+    "population": 11000000,
+    "flagURL": "/images/i.jpg"
+  },
+  {
+    "name": "Великобритания",
+    "population": 62348447,
+    "flagURL": "/images/i.jpg"
+  },
+  {
+    "name": "США",
+    "population": 312247000,
+    "flagURL": "/images/i.jpg"
+  }
+]
